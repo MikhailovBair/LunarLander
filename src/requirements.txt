@@ -1,6 +1,4 @@
 gymnasium~=1.1.0
-swig
-gymnasium[box2d]~=1.1.0
 torch
 tqdm
 setuptools
