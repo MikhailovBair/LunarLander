@@ -11,7 +11,8 @@ class REINFORCETrainer(Trainer):
                  discount_factor: float,
                  learning_rate: float,
                  optimizer_class,
-                 info_frequency: int = 100
+                 info_frequency: int = 100,
+                 checkpoint_path_:str=checkpoint_path
                  ):
         super().__init__(agent, n_episodes, discount_factor)
         self.agent = agent
@@ -19,7 +20,7 @@ class REINFORCETrainer(Trainer):
         self.gamma = discount_factor
         self.device = device
         self.info_frequency = info_frequency
-        self.checkpoint_path = checkpoint_path
+        self.checkpoint_path = checkpoint_path_
 
 
     def train(self):

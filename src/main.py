@@ -6,7 +6,8 @@ from agent import PolicyAgent
 from trainer import REINFORCETrainer
 from visualizer import LunarVisualizer
 from config import (device, hidden_size, learning_rate,
-                    n_episodes, discount_factor, info_frequency)
+                    n_episodes, discount_factor, info_frequency,
+                    evaluation_time)
 
 if __name__ == "__main__":
     env = gym.make("LunarLander-v3", render_mode="rgb_array")
@@ -20,7 +21,7 @@ if __name__ == "__main__":
                                discount_factor=discount_factor,
                                learning_rate=learning_rate,
                                optimizer_class=Optimizer_class,
-                               info_frequency=info_frequency
+                               info_frequency=info_frequency,
                                )
     last_policy, policies, rewards = trainer.train()
 
@@ -31,6 +32,6 @@ if __name__ == "__main__":
     visualizer.plot_rewards(n_episodes=n_episodes,
                             total_rewards=rewards)
     visualizer.visualize_game()
-    visualizer.visualize_evaluation(20, "20_200")
+    visualizer.visualize_evaluation(evaluation_time, "")
 
 

@@ -171,3 +171,4 @@ cython_debug/
 .pypirc
 *.tar
 /src/local_test.py
+/local_results/

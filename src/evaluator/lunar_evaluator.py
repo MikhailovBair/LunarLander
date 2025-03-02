@@ -17,8 +17,8 @@ class LunarEvaluator(Evaluator):
         rewards = []
         for _ in tqdm(range(num_times)):
             rewards.append(self.play_game())
-        mean_reward = np.mean(rewards)
-        return mean_reward, rewards
+        median_reward = np.median(rewards)
+        return median_reward, rewards
 
     def play_game(self):
         state, _ = self.env.reset()
