@@ -14,7 +14,7 @@ class Visualizer:
         plt.plot(np.arange(rolling_window - 1, n_episodes), rmean, label='Rolling Mean', zorder=20)
         plt.xlabel('Episodes')
         plt.ylabel('Total reward')
-        plt.title(label="Training rewards")
+        plt.title(label="Training rewards " + custom_name)
         plt.legend()
         plt.savefig(self.save_path + "/training_rewards_" + custom_name + ".png")
         plt.close()
