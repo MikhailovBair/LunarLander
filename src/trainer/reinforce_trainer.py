@@ -29,7 +29,6 @@ class REINFORCETrainer(Trainer):
 
 
     def train(self):
-        total_rewards = []
         policies = []
         for episode in tqdm(range(self.n_episodes)):
             state, _ = self.env.reset()
@@ -54,17 +53,16 @@ class REINFORCETrainer(Trainer):
             self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
-            total_rewards.append(sum(rewards))
             policies.append(self.agent.policy.state_dict())
             if (episode + 1) % self.info_frequency == 0:
-                print(f'Episode {episode}, Total Reward: {total_rewards[-1]:.2f}')
+                print(f'Episode {episode}, Total Reward: {sum(rewards):.2f}')
                 torch.save({
                     'episode': episode,
                     'model_state_dict': self.agent.policy.state_dict(),
                     'optimizer_state_dict': self.optimizer.state_dict(),
                 }, f'{self.checkpoint_path}/checkpoint_{episode}.tar')
         self.env.close()
-        return policies[-1], policies, total_rewards
+        return policies[-1], policies, self.env.return_queue, self.env.length_queue
 
 
     def calculate_loss(self, rewards, log_probs):

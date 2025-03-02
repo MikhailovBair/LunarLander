@@ -12,6 +12,12 @@ import matplotlib.patheffects as path_effects
 from config import rolling_window
 from gymnasium.wrappers import RecordEpisodeStatistics, RecordVideo
 
+def get_moving_avgs(arr, window, convolution_mode):
+    return np.convolve(
+        np.array(arr).flatten(),
+        np.ones(window),
+        mode=convolution_mode
+    ) / window
 
 def add_median_labels(ax: plt.Axes, fmt: str = ".1f") -> None:
     """Add text labels to the median lines of a seaborn boxplot.
@@ -50,17 +56,27 @@ class Visualizer:
         self.agent = agent
         self.save_path = save_path
 
-    def plot_rewards(self, n_episodes, total_rewards, custom_name=""):
+    def plot_episode_statistics(self, n_episodes, statistic, statistic_name="", custom_name=""):
         plt.figure(figsize=(16, 9))
-        rmean = np.convolve(total_rewards, np.ones(rolling_window), 'valid') / rolling_window
-        plt.plot(np.arange(0, n_episodes), total_rewards, label='Total rewards', zorder=10)
-        plt.plot(np.arange(rolling_window - 1, n_episodes), rmean, label='Rolling Mean', zorder=20)
+        rmean = np.convolve(statistic, np.ones(rolling_window), 'valid') / rolling_window
+        plt.plot(np.arange(0, n_episodes), statistic, label=statistic_name, zorder=10)
+        plt.plot(np.arange(rolling_window - 1, n_episodes), rmean, label='Rolling Mean ' + statistic_name, zorder=20)
         plt.xlabel('Episodes')
-        plt.ylabel('Total reward')
-        plt.title(label="Training rewards " + custom_name)
+        plt.ylabel(statistic_name)
+        plt.title(label="Training " + custom_name)
         plt.legend()
-        plt.savefig(self.save_path + "/training_rewards_" + custom_name + ".png")
+        plt.savefig(self.save_path + "/training_" + statistic_name + "_" + custom_name + ".png")
         plt.close()
+
+    def plot_rewards(self, n_episodes, total_rewards, custom_name=""):
+        self.plot_episode_statistics(n_episodes, total_rewards, "Rewards", custom_name)
+
+    def plot_lengths(self, n_episodes, lengths, custom_name=""):
+        self.plot_episode_statistics(n_episodes, lengths, "Lengths", custom_name)
+
+    def plot_statistics(self, n_episodes, total_rewards, lengths, custom_name=""):
+        self.plot_rewards(n_episodes, total_rewards, custom_name)
+        self.plot_lengths(n_episodes, lengths, custom_name)
 
     def visualize_game(self, custom_name=""):
         rec_env = RecordVideo(env=self.env, video_folder=self.save_path + "/video_final",
