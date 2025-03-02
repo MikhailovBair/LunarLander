@@ -1,4 +1,7 @@
+from cProfile import label
+
 from agent import PolicyAgent
+from evaluator import LunarEvaluator
 from visualizer import Visualizer
 from config import device, visualizer_path
 
@@ -6,19 +9,20 @@ import matplotlib.pyplot as plt
 import matplotlib.animation
 import gymnasium as gym
 import torch
+import seaborn as sns
 
 class LunarVisualizer(Visualizer):
     def __init__(self,
                  environment: gym.Env,
                  agent: PolicyAgent,
-                 n_episodes: int,
-                 total_rewards: list[float]
+                 save_path=visualizer_path,
                  ):
-        super().__init__(n_episodes, total_rewards)
+        super().__init__(save_path)
         self.env = environment
         self.agent = agent
+        self.evaluator = LunarEvaluator(self.agent, self.env)
 
-    def visualize_game(self):
+    def visualize_game(self, custom_name=""):
         state, _ = self.env.reset()
         done = False
         frames = []
@@ -40,5 +44,16 @@ class LunarVisualizer(Visualizer):
 
         anim = matplotlib.animation.FuncAnimation(fig, animate, frames=len(frames))
         writer_video = matplotlib.animation.FFMpegWriter(fps=60)
-        anim.save(visualizer_path + "/demo.mp4", writer=writer_video)
+        anim.save(self.save_path + "/demo_" + custom_name + ".mp4", writer=writer_video)
         plt.close()
+
+    def visualize_evaluation(self, num_times, custom_name=""):
+        evaluator = LunarEvaluator(self.agent, self.env)
+        mean, rewards = evaluator.evaluate_agent(num_times)
+        plt.figure(figsize=(16, 9))
+        sns.boxplot(x=rewards, label="Total rewards")
+        plt.xlabel('Reward')
+        plt.title("Policy Reward Distribution")
+        plt.legend()
+        plt.savefig(self.save_path + "/policy_reward_distribution" + custom_name + ".png")
+

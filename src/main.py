@@ -27,10 +27,10 @@ if __name__ == "__main__":
     policy.load_state_dict(last_policy)
     final_agent = PolicyAgent(env, policy)
     visualizer = LunarVisualizer(environment=env,
-                                 agent=final_agent,
-                                 n_episodes=n_episodes,
-                                 total_rewards=rewards)
-    visualizer.plot_rewards()
+                                 agent=final_agent)
+    visualizer.plot_rewards(n_episodes=n_episodes,
+                            total_rewards=rewards)
     visualizer.visualize_game()
+    visualizer.visualize_evaluation(20, "20_200")
 
 
