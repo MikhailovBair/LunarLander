@@ -6,8 +6,7 @@ import torch
 
 
 class PolicyAgent(Agent):
-    def __init__(self, env: gym.Env, policy: Policy):
-        super().__init__(env)
+    def __init__(self, policy: Policy):
         self.policy = policy
 
     def get_action(self, observation):

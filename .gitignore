@@ -172,3 +172,4 @@ cython_debug/
 *.tar
 /src/local_test.py
 /local_results/
+/results/img/video_training/

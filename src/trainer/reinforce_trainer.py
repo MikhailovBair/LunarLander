@@ -1,20 +1,25 @@
 from trainer import Trainer
 from agent import PolicyAgent
-from config import device, checkpoint_path
+from config import device, checkpoint_path, video_record_period, visualizer_path
 from tqdm.auto import tqdm
 import torch
+import gymnasium as gym
+
 
 class REINFORCETrainer(Trainer):
     def __init__(self,
                  agent: PolicyAgent,
+                 env: gym.Env,
                  n_episodes: int,
                  discount_factor: float,
                  learning_rate: float,
                  optimizer_class,
                  info_frequency: int = 100,
-                 checkpoint_path_:str=checkpoint_path
+                 checkpoint_path_:str=checkpoint_path,
+                 video_path = visualizer_path,
+                 record_period = video_record_period,
                  ):
-        super().__init__(agent, n_episodes, discount_factor)
+        super().__init__(agent, env, n_episodes, discount_factor, video_path, record_period)
         self.agent = agent
         self.optimizer = optimizer_class(self.agent.policy.parameters(), lr=learning_rate)
         self.gamma = discount_factor
