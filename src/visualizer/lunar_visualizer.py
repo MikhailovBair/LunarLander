@@ -56,4 +56,5 @@ class LunarVisualizer(Visualizer):
         plt.title("Policy Reward Distribution")
         plt.legend()
         plt.savefig(self.save_path + "/policy_reward_distribution" + custom_name + ".png")
+        plt.close()
 

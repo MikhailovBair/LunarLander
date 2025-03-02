@@ -17,4 +17,5 @@ class Visualizer:
         plt.title(label="Training rewards")
         plt.legend()
         plt.savefig(self.save_path + "/training_rewards_" + custom_name + ".png")
+        plt.close()
 
