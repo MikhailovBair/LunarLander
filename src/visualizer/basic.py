@@ -64,6 +64,18 @@ class Visualizer:
         self.env = environment
         self.agent = agent
         self.save_path = save_path
+        SMALL_SIZE = 18
+        MEDIUM_SIZE = 22
+        BIGGER_SIZE = 26
+
+        plt.rc('font', size=SMALL_SIZE)  # controls default text sizes
+        plt.rc('axes', titlesize=BIGGER_SIZE)  # fontsize of the axes title
+        plt.rc('axes', labelsize=MEDIUM_SIZE)  # fontsize of the x and y labels
+        plt.rc('xtick', labelsize=SMALL_SIZE)  # fontsize of the tick labels
+        plt.rc('ytick', labelsize=SMALL_SIZE)  # fontsize of the tick labels
+        plt.rc('legend', fontsize=SMALL_SIZE)  # legend fontsize
+        plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+        plt.rcParams["figure.autolayout"] = True
 
     def plot_step_statistics(self, n_steps, statistic, statistic_name="", custom_name=""):
         plt.figure(figsize=(16, 9))
@@ -103,6 +115,14 @@ class Visualizer:
         plt.xlabel('Reward')
         plt.title("Policy Reward Distribution " + custom_name)
         plt.legend()
-        plt.savefig(self.save_path + "/policy_reward_distribution" + custom_name + ".png")
+        plt.savefig(self.save_path + f"/policy_reward_distribution_{custom_name}.png")
+
+        plt.figure(figsize=(16, 9))
+        sns.kdeplot(rewards)
+        sns.rugplot(rewards)
+        plt.xlabel('Reward')
+        plt.ylabel("Density")
+        plt.title("Policy Reward Density " + custom_name)
+        plt.savefig(self.save_path + f"/policy_reward_density_{custom_name}.png")
         plt.close()
 

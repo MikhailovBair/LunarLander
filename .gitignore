@@ -174,3 +174,4 @@ cython_debug/
 /local_results/
 /results/img/video_training/
 /results/training_data/
+/src/local_evaluation.py
