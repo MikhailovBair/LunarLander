@@ -12,7 +12,7 @@
 
 This environment is a classic rocket trajectory optimization problem. According to Pontryagin’s maximum principle, it is optimal to fire the engine at full throttle or turn it off. This is the reason why this environment has discrete actions: engine on or off.
 
-There are two environment versions: discrete or continuous. The landing pad is always at coordinates (0,0). The coordinates are the first two numbers in the state vector. Landing outside of the landing pad is possible. Fuel is infinite, so an agent can learn to fly and then land on its first attempt.
+The environment is discrete. The landing pad is always at coordinates (0,0). The coordinates are the first two numbers in the state vector. Landing outside of the landing pad is possible. Fuel is infinite, so an agent can learn to fly and then land on its first attempt.
 
 ### Action Space
 
@@ -61,7 +61,7 @@ An episode is considered a solution if it scores at least 200 points.
 
 REINFORCE is a Monte Carlo-based policy gradient algorithm used in Reinforcement Learning (RL) to optimize a policy directly. REINFORCE algorithm falls under the class of on-policy methods, meaning it updates the policy based on the actions taken during the current policy's execution.
 
-REINFORCE algorithm improves the policy by adjusting the probabilities of actions taken in each state based on the cumulative rewards (or returns) obtained after those actions. Unlike value-based methods, which rely on estimating state-action values, REINFORCE directly learns the policy that maps states to actions, making it well-suited for environments with continuous action spaces or complex tasks where value estimation is challenging.
+REINFORCE algorithm improves the policy by adjusting the probabilities of actions taken in each state based on the cumulative rewards (or returns) obtained after those actions. Unlike value-based methods, which rely on estimating state-action values, REINFORCE directly learns the policy that maps states to actions, making it well-suited for complex tasks where value estimation is challenging.
 
 **The REINFORCE algorithm works in the following steps:**
 
