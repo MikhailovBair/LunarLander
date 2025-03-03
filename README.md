@@ -11,9 +11,13 @@
 ## Environment description
 ### Overview
 
-This environment is a classic rocket trajectory optimization problem. According to Pontryagin’s maximum principle, it is optimal to fire the engine at full throttle or turn it off. This is the reason why this environment has discrete actions: engine on or off.
-
-There are two environment versions: discrete or continuous. The landing pad is always at coordinates (0,0). The coordinates are the first two numbers in the state vector. Landing outside of the landing pad is possible. Fuel is infinite, so an agent can learn to fly and then land on its first attempt.
+This environment is a classic rocket trajectory optimization problem. 
+According to Pontryagin’s maximum principle, it is optimal to fire the engine at full throttle or turn it off. 
+This is the reason why this environment has discrete actions: engine on or off.
+The landing pad is always at coordinates (0,0). 
+The coordinates are the first two numbers in the state vector. 
+Landing outside of the landing pad is possible. 
+Fuel is infinite, so an agent can learn to fly and then land on its first attempt.
 
 ### Action Space
 
@@ -95,7 +99,7 @@ The gradient $\nabla_{\theta} \log \pi_{\theta}(a_t | s_t)$ represents how much 
 To increase stability of training process and reduce gradient variance we evaluated influence of changing a policy update interval. Simple replay buffer was implemented, with size provided in `update_interval` argument in configuration file. In section `Results` you can find training process visulization for update intervals 1, 5 and 10.
 
 ## Results
-Demonsration of learned policy:
+Demonstration of learned policy:
 
 ![demo](https://github.com/user-attachments/assets/5507156b-c9aa-45e3-bde1-5ea017c9176d)
 
