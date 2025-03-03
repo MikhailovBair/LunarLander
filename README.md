@@ -5,6 +5,7 @@
 - [Environment description](#environment-description)
 - [Rewards](#rewards)
 - [Method](#method-applied)
+- [Hyperparameter tuning](#hyperparameter-tuning)
 - [Results](#results)
 
 ## Environment description
@@ -89,10 +90,20 @@ The gradient $\nabla_{\theta} \log \pi_{\theta}(a_t | s_t)$ represents how much 
 
 - **Repeat:** This process is repeated for several episodes, iteratively updating the policy in the direction of higher rewards.
 
+## Hyperparameter tuning
 
+To increase stability of training process and reduce gradient variance we evaluated influence of changing a policy update interval. Simple replay buffer was implemented, with size provided in `update_interval` argument in configuration file. In section `Results` you can find training process visulization for update intervals 1, 5 and 10.
 
 ## Results
+Demonsration of learned policy:
+
 ![demo](https://github.com/user-attachments/assets/5507156b-c9aa-45e3-bde1-5ea017c9176d)
-![Results](https://github.com/MikhailovBair/LunarLander/blob/main/results/img/rewards.png)
+
+Training rewards with update interval 1:
+![Results](https://github.com/MikhailovBair/LunarLander/blob/development/results/img/rewards_1.png)
+Training rewards with update interval 5:
+![Results](https://github.com/MikhailovBair/LunarLander/blob/development/results/img/rewards_5.png)
+Training rewards with update interval 10:
+![Results](https://github.com/MikhailovBair/LunarLander/blob/development/results/img/rewards_10.png)
 
 
