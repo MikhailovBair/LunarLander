@@ -16,7 +16,7 @@ from visualizer import Visualizer
 
 medians = []
 runs = 2
-n_episodes = 200
+n_steps = 200
 for i in range(runs):
     env = gym.make("LunarLander-v3", render_mode="rgb_array")
     policy = FCPolicy(input_size=env.observation_space.shape[0],
@@ -31,7 +31,7 @@ for i in range(runs):
     os.makedirs(name=cp_path, exist_ok=True)
 
 
-    trainer = REINFORCETrainer(agent=agent, env=env, n_episodes=n_episodes,
+    trainer = REINFORCETrainer(agent=agent, env=env, n_steps=n_steps,
                                discount_factor=discount_factor,
                                learning_rate=learning_rate,
                                optimizer_class=Optimizer_class,
@@ -45,7 +45,7 @@ for i in range(runs):
     visualizer = Visualizer(environment=env,
                             agent=final_agent,
                             save_path=img_path)
-    visualizer.plot_rewards(n_episodes=n_episodes,
+    visualizer.plot_rewards(n_steps=n_steps,
                             total_rewards=rewards)
     visualizer.visualize_game(custom_name=f"run_{i}")
     visualizer.visualize_evaluation(evaluation_time, f"run_{i}")

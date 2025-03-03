@@ -12,7 +12,7 @@ class Trainer(ABC):
             self,
             agent: Agent,
             env: gym.Env,
-            n_episodes: int,
+            n_steps: int,
             discount_factor: float = 0.99,
             video_path=visualizer_path,
             record_period=video_record_period,
@@ -21,7 +21,7 @@ class Trainer(ABC):
         self.env=RecordVideo(env=env, video_folder=video_path + "/video_training",
                              episode_trigger=lambda x: x % record_period == 0)
         self.env=RecordEpisodeStatistics(self.env)
-        self.n_episodes = n_episodes
+        self.n_steps = n_steps
         self.discount_factor = discount_factor
 
     @abstractmethod

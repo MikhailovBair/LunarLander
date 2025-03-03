@@ -44,6 +44,16 @@ def add_median_labels(ax: plt.Axes, fmt: str = ".1f") -> None:
             path_effects.Normal(),
         ])
 
+def plot_comparison(runs, name, window=rolling_window, dir_path=visualizer_path):
+    plt.figure(figsize=(16, 9))
+    for i, run in enumerate(runs):
+        sns.lineplot(get_moving_avgs(run, rolling_window, "valid"), label=f"run_{name}_{i}")
+    plt.title(f"{name} in multiple runs")
+    plt.xlabel("steps")
+    plt.ylabel(name)
+    plt.savefig(f"{dir_path}/comparison_{name}.png")
+    plt.close()
+
 
 class Visualizer:
     def __init__(self,
@@ -55,27 +65,27 @@ class Visualizer:
         self.agent = agent
         self.save_path = save_path
 
-    def plot_episode_statistics(self, n_episodes, statistic, statistic_name="", custom_name=""):
+    def plot_step_statistics(self, n_steps, statistic, statistic_name="", custom_name=""):
         plt.figure(figsize=(16, 9))
         rmean = np.convolve(statistic, np.ones(rolling_window), 'valid') / rolling_window
-        plt.plot(np.arange(0, n_episodes), statistic, label=statistic_name, zorder=10)
-        plt.plot(np.arange(rolling_window - 1, n_episodes), rmean, label='Rolling Mean ' + statistic_name, zorder=20)
-        plt.xlabel('Episodes')
+        plt.plot(np.arange(0, n_steps), statistic, label=statistic_name, zorder=10)
+        plt.plot(np.arange(rolling_window - 1, n_steps), rmean, label='Rolling Mean ' + statistic_name, zorder=20)
+        plt.xlabel('Steps')
         plt.ylabel(statistic_name)
         plt.title(label="Training " + custom_name)
         plt.legend()
         plt.savefig(self.save_path + "/training_" + statistic_name + "_" + custom_name + ".png")
         plt.close()
 
-    def plot_rewards(self, n_episodes, total_rewards, custom_name=""):
-        self.plot_episode_statistics(n_episodes, total_rewards, "Rewards", custom_name)
+    def plot_rewards(self, n_steps, total_rewards, custom_name=""):
+        self.plot_step_statistics(n_steps, total_rewards, "Rewards", custom_name)
 
-    def plot_lengths(self, n_episodes, lengths, custom_name=""):
-        self.plot_episode_statistics(n_episodes, lengths, "Lengths", custom_name)
+    def plot_lengths(self, n_steps, lengths, custom_name=""):
+        self.plot_step_statistics(n_steps, lengths, "Lengths", custom_name)
 
-    def plot_statistics(self, n_episodes, total_rewards, lengths, custom_name=""):
-        self.plot_rewards(n_episodes, total_rewards, custom_name)
-        self.plot_lengths(n_episodes, lengths, custom_name)
+    def plot_statistics(self, n_steps, total_rewards, lengths, custom_name=""):
+        self.plot_rewards(n_steps, total_rewards, custom_name)
+        self.plot_lengths(n_steps, lengths, custom_name)
 
     def visualize_game(self, custom_name=""):
         rec_env = RecordVideo(env=self.env, video_folder=self.save_path + "/video_final",
