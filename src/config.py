@@ -14,4 +14,5 @@ rolling_window = 100
 evaluation_time = 20
 update_interval = 2
 save_interval = 100
-num_runs = 2
+num_runs = 1
+num_envs = 64
