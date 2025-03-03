@@ -1,11 +1,12 @@
 import gymnasium as gym
 import torch
 from tqdm.auto import tqdm
+import numpy as np
 
 from agent import PolicyAgent
 from config import (device, checkpoint_path,
                     video_record_period, visualizer_path,
-                    update_interval, save_interval)
+                    update_interval, save_interval, data_path, num_repets)
 from trainer import Trainer
 
 
@@ -31,54 +32,73 @@ class REINFORCETrainer(Trainer):
         self.checkpoint_path = checkpoint_path_
         self.update_interval = update_interval
         self.save_interval = save_interval
+        self.num_repets = num_repets
+
+
+    def train(self):
+        sum_rewards = np.empty((self.num_repets, self.n_episodes))
+        for i in tqdm(range(self.num_repets)):
+            last_policy, total_rewards = self.train()
+            sum_rewards[i] = np.array(total_rewards)
+        
+        return last_policy, sum_rewards
 
 
     def train(self):
         returns = torch.empty(0, dtype=torch.float64, device=device)
         log_probs = torch.empty(0, dtype=torch.float64, device=device)
+        sum_rewards = np.empty((self.num_repets, self.n_episodes))
+        sum_lengths = np.empty((self.num_repets, self.n_episodes))
         total_rewards = []
         total_lengths = []
-        for episode in tqdm(range(self.n_episodes)):
-            state, _ = self.env.reset()
-            rewards = []
-            done = False
+        for i in tqdm(range(self.num_repets)):
+            for episode in tqdm(range(self.n_episodes)):
+                state, _ = self.env.reset()
+                rewards = []
+                done = False
 
-            while not done:
-                state_tensor = torch.tensor(state, dtype=torch.float32,
-                                            device=self.device).to(device)
-                action, log_prob_action = self.agent.get_action(state_tensor)
-                next_state, reward, terminated, truncated, _ = self.env.step(action.cpu().item())
+                while not done:
+                    state_tensor = torch.tensor(state, dtype=torch.float32,
+                                                device=self.device).to(device)
+                    action, log_prob_action = self.agent.get_action(state_tensor)
+                    next_state, reward, terminated, truncated, _ = self.env.step(action.cpu().item())
 
-                log_probs = torch.concatenate((log_probs,log_prob_action))
-                rewards.append(reward)
+                    log_probs = torch.concatenate((log_probs,log_prob_action))
+                    rewards.append(reward)
 
-                done = terminated or truncated
-                state = next_state
+                    done = terminated or truncated
+                    state = next_state
 
 
-            episode_returns = self.calculate_returns(rewards)
-            returns = torch.concatenate((returns,episode_returns))
-            if (episode+1) % self.update_interval==0:
-                loss = self.calculate_loss(returns, log_probs)
-                self.optimizer.zero_grad()
-                loss.backward()
-                self.optimizer.step()
+                episode_returns = self.calculate_returns(rewards)
+                returns = torch.concatenate((returns,episode_returns))
+                if (episode+1) % self.update_interval==0:
+                    loss = self.calculate_loss(returns, log_probs)
+                    self.optimizer.zero_grad()
+                    loss.backward()
+                    self.optimizer.step()
 
-                returns = torch.empty(0, dtype=torch.float64, device=device)
-                log_probs = torch.empty(0, dtype=torch.float64, device=device)
+                    returns = torch.empty(0, dtype=torch.float64, device=device)
+                    log_probs = torch.empty(0, dtype=torch.float64, device=device)
 
-            total_rewards.append(self.env.return_queue[-1])
-            total_lengths.append(self.env.length_queue[-1])
-            if (episode + 1) % self.info_frequency == 0:
-                print(f'Episode {episode}, Total Reward: {sum(rewards):.2f}')
+                total_rewards.append(self.env.return_queue[-1])
+                total_lengths.append(self.env.length_queue[-1])
 
-            if (episode + 1) % self.save_interval == 0:
-                torch.save({
-                    'episode': episode,
-                    'model_state_dict': self.agent.policy.state_dict(),
-                    'optimizer_state_dict': self.optimizer.state_dict(),
-                }, f'{self.checkpoint_path}/checkpoint_{episode}.tar')
+                if (episode + 1) % self.info_frequency == 0:
+                    print(f'Episode {episode}, Total Reward: {sum(rewards):.2f}')
 
+                if (episode + 1) % self.save_interval == 0:
+                    torch.save({
+                        'episode': episode,
+                        'model_state_dict': self.agent.policy.state_dict(),
+                        'optimizer_state_dict': self.optimizer.state_dict(),
+                    }, f'{self.checkpoint_path}/checkpoint_{episode}.tar')
+            
+            sum_rewards[i] = np.array(total_rewards)
+
+        total_rewards = np.mean(sum_rewards, axis=0)
+        total_lengths = np.mean(sum_lengths, axis=0)
+        np.save(f'{data_path}/training_rewards.npy', sum_rewards)
         last_policy = self.agent.policy.state_dict()
         self.env.close()
         return last_policy, total_rewards, total_lengths
