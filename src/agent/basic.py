@@ -1,4 +1,3 @@
-import gymnasium as gym
 from abc import ABC, abstractmethod
 
 class Agent(ABC):

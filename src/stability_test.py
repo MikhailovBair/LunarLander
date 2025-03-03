@@ -1,16 +1,18 @@
+import os
+
 import gymnasium as gym
 import matplotlib.pyplot as plt
 import seaborn as sns
 import torch.optim
-import os
-from evaluator import Evaluator
-from policy import FCPolicy
+
 from agent import PolicyAgent
-from trainer import REINFORCETrainer
-from visualizer import Visualizer
 from config import (device, hidden_size, learning_rate,
                     discount_factor, info_frequency,
                     evaluation_time)
+from evaluator import Evaluator
+from policy import FCPolicy
+from trainer import REINFORCETrainer
+from visualizer import Visualizer
 
 medians = []
 runs = 2

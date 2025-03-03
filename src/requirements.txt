@@ -4,6 +4,6 @@ box2d
 moviepy
 tqdm
 setuptools
-matplotlib
-seaborn
+matplotlib~=3.10.1
+seaborn~=0.13.2
 numpy

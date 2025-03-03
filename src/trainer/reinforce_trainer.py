@@ -1,9 +1,12 @@
-from trainer import Trainer
-from agent import PolicyAgent
-from config import device, checkpoint_path, video_record_period, visualizer_path, update_interval, save_interval
-from tqdm.auto import tqdm
-import torch
 import gymnasium as gym
+import torch
+from tqdm.auto import tqdm
+
+from agent import PolicyAgent
+from config import (device, checkpoint_path,
+                    video_record_period, visualizer_path,
+                    update_interval, save_interval)
+from trainer import Trainer
 
 
 class REINFORCETrainer(Trainer):
@@ -31,9 +34,10 @@ class REINFORCETrainer(Trainer):
 
 
     def train(self):
-        
         returns = torch.empty(0, dtype=torch.float64, device=device)
         log_probs = torch.empty(0, dtype=torch.float64, device=device)
+        total_rewards = []
+        total_lengths = []
         for episode in tqdm(range(self.n_episodes)):
             state, _ = self.env.reset()
             rewards = []
@@ -63,6 +67,8 @@ class REINFORCETrainer(Trainer):
                 returns = torch.empty(0, dtype=torch.float64, device=device)
                 log_probs = torch.empty(0, dtype=torch.float64, device=device)
 
+            total_rewards.append(self.env.return_queue[-1])
+            total_lengths.append(self.env.length_queue[-1])
             if (episode + 1) % self.info_frequency == 0:
                 print(f'Episode {episode}, Total Reward: {sum(rewards):.2f}')
 
@@ -75,7 +81,7 @@ class REINFORCETrainer(Trainer):
 
         last_policy = self.agent.policy.state_dict()
         self.env.close()
-        return last_policy, self.env.return_queue, self.env.length_queue
+        return last_policy, total_rewards, total_lengths
 
 
     def calculate_loss(self, returns, log_probs):

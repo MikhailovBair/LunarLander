@@ -1,16 +1,15 @@
-from agent import PolicyAgent
-from evaluator import Evaluator
-from config import device, visualizer_path
-
-import matplotlib.pyplot as plt
-import matplotlib.animation
 import gymnasium as gym
-import torch
+import matplotlib.patheffects as path_effects
+import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-import matplotlib.patheffects as path_effects
+from gymnasium.wrappers import RecordVideo
+
+from agent import PolicyAgent
 from config import rolling_window
-from gymnasium.wrappers import RecordEpisodeStatistics, RecordVideo
+from config import visualizer_path
+from evaluator import Evaluator
+
 
 def get_moving_avgs(arr, window, convolution_mode):
     return np.convolve(

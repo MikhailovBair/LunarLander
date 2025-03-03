@@ -1,7 +1,6 @@
-from policy import Policy
-
 from agent import Agent
 from config import device
+from policy import Policy
 
 
 class PolicyAgent(Agent):

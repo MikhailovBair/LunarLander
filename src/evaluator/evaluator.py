@@ -1,9 +1,11 @@
 import gymnasium as gym
-from agent import Agent
-from tqdm.auto import tqdm
-import torch
 import numpy as np
+import torch
+from tqdm.auto import tqdm
+
+from agent import Agent
 from config import device
+
 
 class Evaluator:
     def __init__(self,

@@ -1,14 +1,14 @@
 import gymnasium as gym
 import torch.optim
 
-from policy import FCPolicy
 from agent import PolicyAgent
-from trainer import REINFORCETrainer
-from visualizer import Visualizer
 from config import (device, hidden_size, learning_rate,
                     n_episodes, discount_factor, info_frequency,
                     evaluation_time, visualizer_path,
                     video_record_period, checkpoint_path)
+from policy import FCPolicy
+from trainer import REINFORCETrainer
+from visualizer import Visualizer
 
 if __name__ == "__main__":
     env = gym.make("LunarLander-v3", render_mode="rgb_array")
