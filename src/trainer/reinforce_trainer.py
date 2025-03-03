@@ -1,6 +1,6 @@
 from trainer import Trainer
 from agent import PolicyAgent
-from config import device, checkpoint_path, video_record_period, visualizer_path
+from config import device, checkpoint_path, video_record_period, visualizer_path, update_interval, save_interval
 from tqdm.auto import tqdm
 import torch
 import gymnasium as gym
@@ -26,48 +26,60 @@ class REINFORCETrainer(Trainer):
         self.device = device
         self.info_frequency = info_frequency
         self.checkpoint_path = checkpoint_path_
+        self.update_interval = update_interval
+        self.save_interval = save_interval
 
 
     def train(self):
-        policies = []
+        
+        returns = torch.empty(0, dtype=torch.float64, device=device)
+        log_probs = torch.empty(0, dtype=torch.float64, device=device)
         for episode in tqdm(range(self.n_episodes)):
             state, _ = self.env.reset()
-
             rewards = []
-            log_probs = []
-
             done = False
+
             while not done:
                 state_tensor = torch.tensor(state, dtype=torch.float32,
-                                            device=self.device)
+                                            device=self.device).to(device)
                 action, log_prob_action = self.agent.get_action(state_tensor)
                 next_state, reward, terminated, truncated, _ = self.env.step(action.cpu().item())
 
-                log_probs.append(log_prob_action)
+                log_probs = torch.concatenate((log_probs,log_prob_action))
                 rewards.append(reward)
 
                 done = terminated or truncated
                 state = next_state
 
-            loss = self.calculate_loss(rewards, log_probs)
-            self.optimizer.zero_grad()
-            loss.backward()
-            self.optimizer.step()
-            policies.append(self.agent.policy.state_dict())
+
+            episode_returns = self.calculate_returns(rewards)
+            returns = torch.concatenate((returns,episode_returns))
+            if (episode+1) % self.update_interval==0:
+                loss = self.calculate_loss(returns, log_probs)
+                self.optimizer.zero_grad()
+                loss.backward()
+                self.optimizer.step()
+
+                returns = torch.empty(0, dtype=torch.float64, device=device)
+                log_probs = torch.empty(0, dtype=torch.float64, device=device)
+
             if (episode + 1) % self.info_frequency == 0:
                 print(f'Episode {episode}, Total Reward: {sum(rewards):.2f}')
+
+            if (episode + 1) % self.save_interval == 0:
                 torch.save({
                     'episode': episode,
                     'model_state_dict': self.agent.policy.state_dict(),
                     'optimizer_state_dict': self.optimizer.state_dict(),
                 }, f'{self.checkpoint_path}/checkpoint_{episode}.tar')
+
+        last_policy = self.agent.policy.state_dict()
         self.env.close()
-        return policies[-1], policies, self.env.return_queue, self.env.length_queue
+        return last_policy, self.env.return_queue, self.env.length_queue
 
 
-    def calculate_loss(self, rewards, log_probs):
-        returns = self.calculate_returns(rewards)
-        log_probs = torch.stack(log_probs)
+    def calculate_loss(self, returns, log_probs):
+        # log_probs = torch.stack(log_probs)
         loss = -(log_probs * returns).sum() ### Is it really minus?
         return loss
 

@@ -11,3 +11,5 @@ discount_factor = 0.99
 info_frequency = 100
 rolling_window = 100
 evaluation_time = 20
+update_interval = 1
+save_interval = 10000

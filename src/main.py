@@ -29,7 +29,7 @@ if __name__ == "__main__":
                                video_path=visualizer_path,
                                record_period=video_record_period
                                )
-    last_policy, policies, rewards, lengths = trainer.train()
+    last_policy, rewards, lengths = trainer.train()
 
     policy.load_state_dict(last_policy)
     final_agent = PolicyAgent(policy)
