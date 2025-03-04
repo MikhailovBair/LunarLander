@@ -11,5 +11,5 @@ class PolicyAgent(Agent):
         distribution = self.policy(observation)
         action = distribution.sample()
         action_log_probability = distribution.log_prob(action)
-        return action, action_log_probability.unsqueeze(0)
+        return action, action_log_probability.unsqueeze(-1)
 

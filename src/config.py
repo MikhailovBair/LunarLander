@@ -15,3 +15,4 @@ evaluation_time = 20
 update_interval = 5
 save_interval = 100
 num_runs = 1
+num_envs = 64
