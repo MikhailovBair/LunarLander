@@ -90,7 +90,7 @@ class REINFORCETrainer(Trainer):
             total_lengths.append(np.mean(step_lengths))
 
             if (step + 1) % self.info_frequency == 0:
-                print(f'Episode {step}, Total Reward: {total_rewards[-1]:.2f}')
+                print(f'Episode {step}, Total Reward: {total_rewards[-1]:.2f}, Average Episode Duration: {total_lengths[-1]:.2f}')
 
             if (step + 1) % self.save_interval == 0:
                 torch.save({
