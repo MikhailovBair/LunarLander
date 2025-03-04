@@ -21,6 +21,7 @@ class REINFORCETrainer(Trainer):
                  info_frequency: int = 100,
                  update_interval_:int=update_interval,
                  save_interval_: int=save_interval,
+                 num_envs_:int=num_envs,
                  checkpoint_path_:str=checkpoint_path,
                  video_path = visualizer_path,
                  record_period = video_record_period,
@@ -34,7 +35,7 @@ class REINFORCETrainer(Trainer):
         self.checkpoint_path = checkpoint_path_
         self.update_interval = update_interval_
         self.save_interval = save_interval_
-        self.num_envs = num_envs
+        self.num_envs = num_envs_
 
     def train(self):
         total_rewards = []
@@ -44,6 +45,8 @@ class REINFORCETrainer(Trainer):
             step_log_probs = torch.empty((self.num_envs, 0), dtype=torch.float64, device=device)
             step_rewards = []
             step_lengths = []
+            average_reward_sum = 0
+            average_episode_len = 0
             for episode in range(self.update_interval):
                 state, _ = self.env.reset()
                 episode_rewards = np.empty((self.num_envs, 0), dtype=np.float64)
