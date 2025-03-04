@@ -45,8 +45,6 @@ class REINFORCETrainer(Trainer):
             step_log_probs = torch.empty((self.num_envs, 0), dtype=torch.float64, device=device)
             step_rewards = []
             step_lengths = []
-            average_reward_sum = 0
-            average_episode_len = 0
             for episode in range(self.update_interval):
                 state, _ = self.env.reset()
                 episode_rewards = np.empty((self.num_envs, 0), dtype=np.float64)
@@ -65,26 +63,21 @@ class REINFORCETrainer(Trainer):
                         if term or trunc:
                             next_state[num], _ = self.env.envs[num].reset()
 
-                    done = [d or t or r for d, t, r in zip(done, terminated.tolist(), truncated.tolist())]
                     for i in range(len(done)):
                         if done[i]:
-                            reward[i] = -np.inf
+                            reward[i] = 0
 
+                    done = [d or t or r for d, t, r in zip(done, terminated.tolist(), truncated.tolist())]
                     episode_rewards = np.concatenate((episode_rewards, reward[..., np.newaxis]), axis=1)
-
-                    mask = episode_rewards != -np.inf
-                    sums = np.sum(episode_rewards * mask, axis=1)
-                    average_reward_sum = np.mean(sums[sums > 0]) if np.any(sums > 0) else 0
-
-                    not_equal_counts = np.sum(episode_rewards != -np.inf, axis=1)  # Count elements not equal to constant
-                    average_episode_len = np.mean(not_equal_counts)
 
                     state = next_state
 
                 # episode_returns = self.calculate_returns(episode_rewards)
+                average_reward_sum = np.mean(np.sum(episode_rewards, axis=1))
+                average_episode_len = np.mean(np.count_nonzero(episode_rewards, axis=1))
+
                 step_returns = torch.cat((step_returns, self.calculate_returns(episode_rewards)), dim=1)
                 
-
                 step_rewards.append(average_reward_sum)  # Store the mean reward for this episode
                 step_lengths.append(average_episode_len)
 

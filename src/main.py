@@ -23,8 +23,8 @@ if __name__ == "__main__":
                           hidden_size=hidden_size,
                           output_size=output_size,
                           ).to(device)
-        checkpoint = torch.load("../local_results/checkpoints_final/checkpoint_899.tar", weights_only=True)
-        policy.load_state_dict(checkpoint['model_state_dict'])
+        # checkpoint = torch.load("../local_results/checkpoints_final/checkpoint_899.tar", weights_only=True)
+        # policy.load_state_dict(checkpoint['model_state_dict'])
         agent = PolicyAgent(policy=policy)
         Optimizer_class = torch.optim.Adam
         trainer = REINFORCETrainer(agent=agent,
