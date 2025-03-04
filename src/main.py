@@ -2,7 +2,7 @@ import gymnasium as gym
 import numpy as np
 import torch.optim
 
-from agent import PolicyAgent
+from agent import PolicyAgent, GreedyAgent
 from config import (device, hidden_size, learning_rate,
                     n_steps, discount_factor, info_frequency,
                     evaluation_time, visualizer_path,
@@ -22,7 +22,7 @@ if __name__ == "__main__":
                           hidden_size=hidden_size,
                           output_size=env.action_space.n,
                           ).to(device)
-        agent = PolicyAgent(policy=policy)
+        agent = GreedyAgent(policy=policy)
         Optimizer_class = torch.optim.Adam
         trainer = REINFORCETrainer(agent=agent,
                                    env=env,
@@ -41,7 +41,7 @@ if __name__ == "__main__":
         all_rewards.append(rewards)
 
         policy.load_state_dict(last_policy)
-        final_agent = PolicyAgent(policy)
+        final_agent = GreedyAgent(policy)
 
         custom_name = f"_run_{run}"
 
