@@ -111,3 +111,30 @@ Training rewards with update interval 10:
 ![Results](https://github.com/MikhailovBair/LunarLander/blob/development/results/img/rewards_10.png)
 
 
+## Running the Project
+
+### Prerequisites
+
+Docker: Ensure you have Docker installed on your system.
+
+### Building the Docker Image
+
+1. Clone the repository:
+
+```
+git clone https://github.com/MikhailovBair/LunarLander
+
+cd LunarLander 
+```
+
+2. Build the Docker image using the provided Dockerfile in the root directory:
+
+```
+docker build -t lunarlander .
+```
+
+### Running the Docker Container
+
+```
+docker run --rm -it lunarlander
+```
