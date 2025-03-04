@@ -1,6 +1,8 @@
 import io
 import re
+
 from setuptools import setup, find_packages
+
 
 def read(file_path):
     with io.open(file_path, 'r', encoding='utf-8') as f:

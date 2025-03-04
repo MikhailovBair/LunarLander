@@ -1,8 +1,9 @@
-from policy import Policy
-
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.distributions import Categorical
+
+from policy import Policy
+
 
 class FCPolicy(Policy):
     def __init__(self, input_size, hidden_size, output_size):

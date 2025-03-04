@@ -5,14 +5,19 @@
 - [Environment description](#environment-description)
 - [Rewards](#rewards)
 - [Method](#method-applied)
+- [Hyperparameter tuning](#hyperparameter-tuning)
 - [Results](#results)
 
 ## Environment description
 ### Overview
 
-This environment is a classic rocket trajectory optimization problem. According to Pontryagin’s maximum principle, it is optimal to fire the engine at full throttle or turn it off. This is the reason why this environment has discrete actions: engine on or off.
-
-The environment is discrete. The landing pad is always at coordinates (0,0). The coordinates are the first two numbers in the state vector. Landing outside of the landing pad is possible. Fuel is infinite, so an agent can learn to fly and then land on its first attempt.
+This environment is a classic rocket trajectory optimization problem. 
+According to Pontryagin’s maximum principle, it is optimal to fire the engine at full throttle or turn it off. 
+This is the reason why this environment has discrete actions: engine on or off.
+The landing pad is always at coordinates (0,0). 
+The coordinates are the first two numbers in the state vector. 
+Landing outside of the landing pad is possible. 
+Fuel is infinite, so an agent can learn to fly and then land on its first attempt.
 
 ### Action Space
 
@@ -61,7 +66,7 @@ An episode is considered a solution if it scores at least 200 points.
 
 REINFORCE is a Monte Carlo-based policy gradient algorithm used in Reinforcement Learning (RL) to optimize a policy directly. REINFORCE algorithm falls under the class of on-policy methods, meaning it updates the policy based on the actions taken during the current policy's execution.
 
-REINFORCE algorithm improves the policy by adjusting the probabilities of actions taken in each state based on the cumulative rewards (or returns) obtained after those actions. Unlike value-based methods, which rely on estimating state-action values, REINFORCE directly learns the policy that maps states to actions, making it well-suited for complex tasks where value estimation is challenging.
+REINFORCE algorithm improves the policy by adjusting the probabilities of actions taken in each state based on the cumulative rewards (or returns) obtained after those actions. Unlike value-based methods, which rely on estimating state-action values, REINFORCE directly learns the policy that maps states to actions, making it well-suited for environments with continuous action spaces or complex tasks where value estimation is challenging.
 
 **The REINFORCE algorithm works in the following steps:**
 
@@ -89,10 +94,20 @@ The gradient $\nabla_{\theta} \log \pi_{\theta}(a_t | s_t)$ represents how much 
 
 - **Repeat:** This process is repeated for several episodes, iteratively updating the policy in the direction of higher rewards.
 
+## Hyperparameter tuning
 
+To increase stability of training process and reduce gradient variance we evaluated influence of changing a policy update interval. Simple replay buffer was implemented, with size provided in `update_interval` argument in configuration file. In section `Results` you can find training process visulization for update intervals 1, 5 and 10.
 
 ## Results
+Demonstration of learned policy:
+
 ![demo](https://github.com/user-attachments/assets/5507156b-c9aa-45e3-bde1-5ea017c9176d)
-![Results](https://github.com/MikhailovBair/LunarLander/blob/main/results/img/rewards.png)
+
+Training rewards with update interval 1:
+![Results](https://github.com/MikhailovBair/LunarLander/blob/development/results/img/rewards_1.png)
+Training rewards with update interval 5:
+![Results](https://github.com/MikhailovBair/LunarLander/blob/development/results/img/rewards_5.png)
+Training rewards with update interval 10:
+![Results](https://github.com/MikhailovBair/LunarLander/blob/development/results/img/rewards_10.png)
 
 
