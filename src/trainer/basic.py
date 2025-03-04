@@ -11,16 +11,17 @@ class Trainer(ABC):
     def __init__(
             self,
             agent: Agent,
-            env: gym.Env,
+            env,
             n_steps: int,
             discount_factor: float = 0.99,
             video_path=visualizer_path,
             record_period=video_record_period,
     ):
         self.agent = agent
-        self.env=RecordVideo(env=env, video_folder=video_path + "/video_training",
-                             episode_trigger=lambda x: x % record_period == 0)
-        self.env=RecordEpisodeStatistics(self.env)
+        self.env = env
+        # self.env=RecordVideo(env=env, video_folder=video_path + "/video_training",
+        #                      episode_trigger=lambda x: x % record_period == 0)
+        # self.env=RecordEpisodeStatistics(self.env)
         self.n_steps = n_steps
         self.discount_factor = discount_factor
 

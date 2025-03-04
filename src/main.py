@@ -1,12 +1,13 @@
 import gymnasium as gym
 import numpy as np
 import torch.optim
+from gym.vector import SyncVectorEnv
 
 from agent import PolicyAgent
 from config import (device, hidden_size, learning_rate,
                     n_steps, discount_factor, info_frequency,
                     evaluation_time, visualizer_path,
-                    video_record_period, checkpoint_path, num_runs, data_path, rolling_window)
+                    video_record_period, checkpoint_path, num_runs, data_path, rolling_window, num_envs)
 from policy import FCPolicy
 from trainer import REINFORCETrainer
 import matplotlib.pyplot as plt
@@ -17,10 +18,11 @@ if __name__ == "__main__":
     all_rewards = []
     all_lengths = []
     for run in range(num_runs):
-        env = gym.make("LunarLander-v3", render_mode="rgb_array")
-        policy = FCPolicy(input_size=env.observation_space.shape[0],
+        # env = gym.make("LunarLander-v3", render_mode="rgb_array")
+        env = gym.make_vec('LunarLander-v3', num_envs, render_mode =  "rgb_array")
+        policy = FCPolicy(input_size=env.observation_space.shape[-1],
                           hidden_size=hidden_size,
-                          output_size=env.action_space.n,
+                          output_size=4,
                           ).to(device)
         agent = PolicyAgent(policy=policy)
         Optimizer_class = torch.optim.Adam
