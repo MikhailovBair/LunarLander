@@ -1,7 +1,6 @@
 import gymnasium as gym
 import numpy as np
 import torch.optim
-from gym.vector import SyncVectorEnv
 
 from agent import PolicyAgent
 from config import (device, hidden_size, learning_rate,
@@ -33,6 +32,7 @@ if __name__ == "__main__":
                                    learning_rate=learning_rate,
                                    optimizer_class=Optimizer_class,
                                    info_frequency=info_frequency,
+                                   num_envs_=num_envs,
                                    checkpoint_path_=checkpoint_path,
                                    video_path=visualizer_path,
                                    record_period=video_record_period
@@ -47,7 +47,8 @@ if __name__ == "__main__":
 
         custom_name = f"_run_{run}"
 
-        visualizer = Visualizer(environment=env,
+        final_env=gym.make("LunarLander-v3", render_mode="rgb_array")
+        visualizer = Visualizer(environment=final_env,
                                 agent=final_agent)
         visualizer.plot_statistics(n_steps=n_steps,
                                    total_rewards=rewards,

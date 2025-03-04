@@ -20,6 +20,7 @@ class REINFORCETrainer(Trainer):
                  optimizer_class,
                  info_frequency: int = 100,
                  update_interval_:int=update_interval,
+                 num_envs_=num_envs,
                  save_interval_: int=save_interval,
                  checkpoint_path_:str=checkpoint_path,
                  video_path = visualizer_path,
